@@ -7,7 +7,6 @@ async function fetchJoke(): Promise<string> {
     const data = await response.json();
     return data.joke;
 }
-
 function displayJoke(joke: string): void {
     console.log("Joke: ", joke);
     
@@ -18,7 +17,6 @@ function displayJoke(joke: string): void {
         console.error('Element with id "joke" not found.');
     }
 }
-
 function setupNextJokeButton(): void {
     const nextButton = document.getElementById('nextButton');
     if (nextButton) {
