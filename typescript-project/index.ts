@@ -1,3 +1,11 @@
+interface JokeReport {
+    joke: string;
+    score: number;
+    date: string;
+}
+
+const reportJokes: JokeReport[] = [];
+
 async function fetchJoke(): Promise<string> {
     const response = await fetch('https://icanhazdadjoke.com/', {
         headers: {
@@ -17,6 +25,19 @@ function displayJoke(joke: string): void {
         console.error('Element with id "joke" not found.');
     }
 }
+
+function addJokeToReport(joke: string, score: number): void {
+    const date = new Date().toISOString();
+    const jokeReport: JokeReport = {
+        joke: joke,
+        score: score,
+        date: date
+    };
+    reportJokes.push(jokeReport);
+    console.log('Updated joke report:');
+    console.log(reportJokes);
+}
+
 function setupNextJokeButton(): void {
     const nextButton = document.getElementById('nextButton');
     if (nextButton) {
@@ -33,9 +54,28 @@ function setupNextJokeButton(): void {
     }
 }
 
+function setupScoreButtons(): void {
+    const scoreButtons = document.querySelectorAll('.score-button');
+    scoreButtons.forEach((button: Element) => {
+        button.addEventListener('click', () => {
+            const score = parseInt(button.getAttribute('data-score') || '0');
+            const currentJoke = document.getElementById('joke')?.textContent || '';
+        
+            const existingReport = reportJokes.find(report => report.joke === currentJoke);
+            if (!existingReport) {
+                addJokeToReport(currentJoke, score);
+            } else {
+                existingReport.score = score;
+                console.log('Updated joke score:');
+                console.log(existingReport);
+            }
+        });
+    });
+}
+
 function init(): void {
     setupNextJokeButton();
-    // Mostrar el primer chiste al iniciar
+    setupScoreButtons();
     fetchJoke().then(joke => {
         displayJoke(joke);
     }).catch(error => {

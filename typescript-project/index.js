@@ -34,6 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var reportJokes = [];
 function fetchJoke() {
     return __awaiter(this, void 0, void 0, function () {
         var response, data;
@@ -64,6 +65,17 @@ function displayJoke(joke) {
         console.error('Element with id "joke" not found.');
     }
 }
+function addJokeToReport(joke, score) {
+    var date = new Date().toISOString();
+    var jokeReport = {
+        joke: joke,
+        score: score,
+        date: date
+    };
+    reportJokes.push(jokeReport);
+    console.log('Reporte de acudits actualizado:');
+    console.log(reportJokes);
+}
 function setupNextJokeButton() {
     var _this = this;
     var nextButton = document.getElementById('nextButton');
@@ -92,9 +104,28 @@ function setupNextJokeButton() {
         console.error('Element with id "nextButton" not found.');
     }
 }
+function setupScoreButtons() {
+    var scoreButtons = document.querySelectorAll('.score-button');
+    scoreButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            var _a;
+            var score = parseInt(button.getAttribute('data-score') || '0');
+            var currentJoke = ((_a = document.getElementById('joke')) === null || _a === void 0 ? void 0 : _a.textContent) || '';
+            var existingReport = reportJokes.find(function (report) { return report.joke === currentJoke; });
+            if (!existingReport) {
+                addJokeToReport(currentJoke, score);
+            }
+            else {
+                existingReport.score = score;
+                console.log('Puntuación del chiste actualizada:');
+                console.log(existingReport);
+            }
+        });
+    });
+}
 function init() {
     setupNextJokeButton();
-    // Mostrar el primer chiste al iniciar
+    setupScoreButtons();
     fetchJoke().then(function (joke) {
         displayJoke(joke);
     }).catch(function (error) {
