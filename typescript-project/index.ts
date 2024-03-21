@@ -89,7 +89,6 @@ function setupScoreButtons(): void {
     });
 }
 
-
 function init(): void {
     setupNextJokeButton();
     setupScoreButtons();

@@ -37,26 +37,25 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 function getCurrentTemperature(weatherData) {
     return __awaiter(this, void 0, void 0, function () {
-        var currentDate, currentHour, currentMinute, _i, _a, day, _b, _c, hour, hourDateTimeParts, hourOfDay, roundedHour;
+        var currentDate, currentHour, closestHour, closestTemperature, _i, _a, day, _b, _c, hour, hourOfDay;
         return __generator(this, function (_d) {
             currentDate = new Date();
             currentHour = currentDate.getHours();
-            currentMinute = currentDate.getMinutes();
+            closestHour = null;
+            closestTemperature = null;
             for (_i = 0, _a = weatherData.days; _i < _a.length; _i++) {
                 day = _a[_i];
                 for (_b = 0, _c = day.hours; _b < _c.length; _b++) {
                     hour = _c[_b];
-                    hourDateTimeParts = hour.datetime.split(':');
-                    hourOfDay = parseInt(hourDateTimeParts[0]);
-                    if (hourOfDay >= currentHour && hourOfDay < currentHour + 1) {
-                        roundedHour = currentMinute < 30 ? currentHour : currentHour + 1;
-                        if (hourOfDay === roundedHour) {
-                            return [2 /*return*/, hour.temp];
-                        }
+                    hourOfDay = parseInt(hour.datetime.substr(0, 2));
+                    // Verificamos si la hora del día está más cerca de la hora actual que la hora más cercana actualmente registrada
+                    if (closestHour === null || Math.abs(hourOfDay - currentHour) < Math.abs(closestHour - currentHour)) {
+                        closestHour = hourOfDay;
+                        closestTemperature = hour.temp;
                     }
                 }
             }
-            return [2 /*return*/, null];
+            return [2 /*return*/, closestTemperature]; // Retornamos la temperatura correspondiente a la hora más cercana
         });
     });
 }

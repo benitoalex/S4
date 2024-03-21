@@ -10,23 +10,23 @@ interface WeatherResponse {
 async function getCurrentTemperature(weatherData: WeatherResponse): Promise<number | null> {
     const currentDate = new Date();
     const currentHour = currentDate.getHours();
-    const currentMinute = currentDate.getMinutes();
+
+    let closestHour = null; // Variable para almacenar la hora más cercana encontrada
+    let closestTemperature = null; // Variable para almacenar la temperatura correspondiente a la hora más cercana
 
     for (const day of weatherData.days) {
         for (const hour of day.hours) {
-            const hourDateTimeParts = hour.datetime.split(':');
-            const hourOfDay = parseInt(hourDateTimeParts[0]);
+            const hourOfDay = parseInt(hour.datetime.substr(0, 2)); // Obtenemos las dos primeras cifras de datetime como la hora del día
 
-            if (hourOfDay >= currentHour && hourOfDay < currentHour + 1) {
-                const roundedHour = currentMinute < 30 ? currentHour : currentHour + 1;
-                if (hourOfDay === roundedHour) {
-                    return hour.temp; 
-                }
+            // Verificamos si la hora del día está más cerca de la hora actual que la hora más cercana actualmente registrada
+            if (closestHour === null || Math.abs(hourOfDay - currentHour) < Math.abs(closestHour - currentHour)) {
+                closestHour = hourOfDay;
+                closestTemperature = hour.temp;
             }
         }
     }
 
-    return null; 
+    return closestTemperature; // Retornamos la temperatura correspondiente a la hora más cercana
 }
 
 
