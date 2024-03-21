@@ -6,7 +6,13 @@ interface JokeReport {
 
 const reportJokes: JokeReport[] = [];
 
-async function fetchJoke(): Promise<string> {
+async function fetchJokeFromChuckNorris(): Promise<string> {
+    const response = await fetch('https://api.chucknorris.io/jokes/random');
+    const data = await response.json();
+    return data.value;
+}
+
+async function fetchJokeFromDadJokes(): Promise<string> {
     const response = await fetch('https://icanhazdadjoke.com/', {
         headers: {
             'Accept': 'application/json'
@@ -15,6 +21,16 @@ async function fetchJoke(): Promise<string> {
     const data = await response.json();
     return data.joke;
 }
+
+async function fetchRandomJoke(): Promise<string> {
+    const random = Math.random();
+    if (random < 0.5) {
+        return fetchJokeFromChuckNorris();
+    } else {
+        return fetchJokeFromDadJokes();
+    }
+}
+
 function displayJoke(joke: string): void {
     console.log("Joke: ", joke);
     
@@ -43,7 +59,7 @@ function setupNextJokeButton(): void {
     if (nextButton) {
         nextButton.addEventListener('click', async () => {
             try {
-                const joke = await fetchJoke();
+                const joke = await fetchRandomJoke();
                 displayJoke(joke);
             } catch (error) {
                 console.error('Error fetching joke:', error);
@@ -77,7 +93,7 @@ function setupScoreButtons(): void {
 function init(): void {
     setupNextJokeButton();
     setupScoreButtons();
-    fetchJoke().then(joke => {
+    fetchRandomJoke().then(joke => {
         displayJoke(joke);
     }).catch(error => {
         console.error('Error fetching joke:', error);

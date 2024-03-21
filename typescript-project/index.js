@@ -36,7 +36,23 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var reportJokes = [];
-function fetchJoke() {
+function fetchJokeFromChuckNorris() {
+    return __awaiter(this, void 0, void 0, function () {
+        var response, data;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, fetch('https://api.chucknorris.io/jokes/random')];
+                case 1:
+                    response = _a.sent();
+                    return [4 /*yield*/, response.json()];
+                case 2:
+                    data = _a.sent();
+                    return [2 /*return*/, data.value];
+            }
+        });
+    });
+}
+function fetchJokeFromDadJokes() {
     return __awaiter(this, void 0, void 0, function () {
         var response, data;
         return __generator(this, function (_a) {
@@ -53,6 +69,21 @@ function fetchJoke() {
                     data = _a.sent();
                     return [2 /*return*/, data.joke];
             }
+        });
+    });
+}
+function fetchRandomJoke() {
+    return __awaiter(this, void 0, void 0, function () {
+        var random;
+        return __generator(this, function (_a) {
+            random = Math.random();
+            if (random < 0.5) {
+                return [2 /*return*/, fetchJokeFromChuckNorris()];
+            }
+            else {
+                return [2 /*return*/, fetchJokeFromDadJokes()];
+            }
+            return [2 /*return*/];
         });
     });
 }
@@ -87,7 +118,7 @@ function setupNextJokeButton() {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, fetchJoke()];
+                        return [4 /*yield*/, fetchRandomJoke()];
                     case 1:
                         joke = _a.sent();
                         displayJoke(joke);
@@ -127,7 +158,7 @@ function setupScoreButtons() {
 function init() {
     setupNextJokeButton();
     setupScoreButtons();
-    fetchJoke().then(function (joke) {
+    fetchRandomJoke().then(function (joke) {
         displayJoke(joke);
     }).catch(function (error) {
         console.error('Error fetching joke:', error);
