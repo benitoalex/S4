@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -73,7 +74,7 @@ function addJokeToReport(joke, score) {
         date: date
     };
     reportJokes.push(jokeReport);
-    console.log('Reporte de acudits actualizado:');
+    console.log('Updated joke report:');
     console.log(reportJokes);
 }
 function setupNextJokeButton() {
@@ -117,7 +118,7 @@ function setupScoreButtons() {
             }
             else {
                 existingReport.score = score;
-                console.log('Puntuación del chiste actualizada:');
+                console.log('Updated joke score:');
                 console.log(existingReport);
             }
         });
