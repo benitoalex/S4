@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,33 +34,40 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-function getCurrentTemperature(weatherData) {
+function getCurrentWeatherInfo(weatherData) {
     return __awaiter(this, void 0, void 0, function () {
-        var currentDate, currentHour, closestHour, closestTemperature, _i, _a, day, _b, _c, hour, hourOfDay;
+        var currentDate, currentHour, closestHour, closestTemperature, closestIcon, _i, _a, day, _b, _c, hour, hourOfDay;
         return __generator(this, function (_d) {
             currentDate = new Date();
             currentHour = currentDate.getHours();
             closestHour = null;
             closestTemperature = null;
+            closestIcon = '';
             for (_i = 0, _a = weatherData.days; _i < _a.length; _i++) {
                 day = _a[_i];
                 for (_b = 0, _c = day.hours; _b < _c.length; _b++) {
                     hour = _c[_b];
                     hourOfDay = parseInt(hour.datetime.substr(0, 2));
-                    // Verificamos si la hora del día está más cerca de la hora actual que la hora más cercana actualmente registrada
                     if (closestHour === null || Math.abs(hourOfDay - currentHour) < Math.abs(closestHour - currentHour)) {
                         closestHour = hourOfDay;
                         closestTemperature = hour.temp;
+                        closestIcon = hour.icon;
                     }
                 }
             }
-            return [2 /*return*/, closestTemperature]; // Retornamos la temperatura correspondiente a la hora más cercana
+            if (closestTemperature !== null && closestIcon !== '') {
+                return [2 /*return*/, { temperature: closestTemperature, icon: closestIcon }];
+            }
+            else {
+                return [2 /*return*/, null];
+            }
+            return [2 /*return*/];
         });
     });
 }
 function displayWeather() {
     return __awaiter(this, void 0, void 0, function () {
-        var weatherDiv, weatherData, currentTemperature;
+        var weatherDiv, weatherData, weatherInfo, iconUrl;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -71,11 +77,12 @@ function displayWeather() {
                 case 1:
                     weatherData = _a.sent();
                     if (!(weatherData && weatherData.days && weatherData.days.length > 0)) return [3 /*break*/, 3];
-                    return [4 /*yield*/, getCurrentTemperature(weatherData)];
+                    return [4 /*yield*/, getCurrentWeatherInfo(weatherData)];
                 case 2:
-                    currentTemperature = _a.sent();
-                    if (currentTemperature !== null) {
-                        weatherDiv.textContent = "".concat(currentTemperature, "\u00B0C");
+                    weatherInfo = _a.sent();
+                    if (weatherInfo !== null) {
+                        iconUrl = getIconUrl(weatherInfo.icon);
+                        weatherDiv.innerHTML = "<img src=\"".concat(iconUrl, "\" alt=\"Weather Icon\"> ").concat(weatherInfo.temperature, "\u00B0C");
                     }
                     else {
                         weatherDiv.textContent = 'Temperature data not available for the current hour';
@@ -92,6 +99,15 @@ function displayWeather() {
             }
         });
     });
+}
+function getIconUrl(iconName) {
+    switch (iconName) {
+        case 'cloudy':
+            return window.location.origin + '/typescript-project/Imagenes/' + iconName + '.png';
+        // Agrega más casos para otros nombres de iconos según sea necesario
+        default:
+            return window.location.origin + '/typescript-project/Imagenes/' + iconName + '.png';
+    }
 }
 function getWeatherData() {
     return __awaiter(this, void 0, void 0, function () {
